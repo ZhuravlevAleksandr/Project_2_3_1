@@ -11,22 +11,22 @@ import web.service.UserService;
 @RequestMapping("/users")
 public class UsersController {
 
+    @Autowired
     private final UserService userService;
 
-    @Autowired
     public UsersController(UserService userService) {
         this.userService = userService;
     }
 
     @GetMapping
     public String index(Model model) {
-        model.addAttribute("users", userService.index());
+        model.addAttribute("users", userService.getAllUsers());
         return "users/index";
     }
 
     @GetMapping("/{id}")
     public String show(@PathVariable("id") int id, Model model) {
-        model.addAttribute("user", userService.show(id));
+        model.addAttribute("user", userService.getUserById(id));
         return "users/show";
     }
 
@@ -37,25 +37,25 @@ public class UsersController {
 
     @PostMapping
     public String create(@ModelAttribute("user") User user) {
-        userService.save(user);
+        userService.addUser(user);
         return "redirect:/users";
     }
 
     @GetMapping("/{id}/edit")
     public String edit(Model model, @PathVariable("id") int id) {
-        model.addAttribute("user", userService.show(id));
+        model.addAttribute("user", userService.getUserById(id));
         return "users/edit";
     }
 
     @PatchMapping("/{id}")
     public String update(@ModelAttribute("user") User user, @PathVariable("id") int id) {
-        userService.update(id, user);
+        userService.updateUser(id, user);
         return "redirect:/users";
     }
 
     @DeleteMapping("/{id}")
     public String delete(@PathVariable("id") int id) {
-        userService.delete(id);
+        userService.removeUser(id);
         return "redirect:/users";
     }
 }
